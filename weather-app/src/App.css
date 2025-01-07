@@ -1,0 +1,105 @@
+/* General styles */
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #f0f4f8;
+  color: #333;
+}
+
+/* App container */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+}
+
+/* Header */
+.app-header {
+  width: 100%;
+  background-color: #4caf50;
+  color: white;
+  text-align: center;
+  padding: 1rem 0;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.app-header h1 {
+  margin: 0;
+  font-size: 2rem;
+}
+
+/* Main content */
+.app-main {
+  width: 90%;
+  max-width: 600px;
+  margin: 2rem auto;
+  text-align: center;
+}
+
+/* City input */
+.city-input {
+  width: 100%;
+  padding: 0.8rem;
+  margin-bottom: 1rem;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.3s;
+}
+
+.city-input:focus {
+  border-color: #4caf50;
+  outline: none;
+}
+
+/* Loading and error messages */
+.loading {
+  color: #007bff;
+  font-size: 1.2rem;
+}
+
+.error {
+  color: #e53935;
+  font-size: 1.2rem;
+}
+
+/* Weather card */
+.weather-card {
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  padding: 1.5rem;
+  margin-top: 1rem;
+  text-align: center;
+  transition: transform 0.3s ease-in-out;
+}
+
+.weather-card:hover {
+  transform: translateY(-5px);
+}
+
+.weather-card h2 {
+  font-size: 1.8rem;
+  margin-bottom: 0.5rem;
+}
+
+.weather-card img {
+  max-width: 100px;
+  margin: 1rem 0;
+}
+
+.weather-card p {
+  font-size: 1rem;
+  margin: 0.3rem 0;
+}
+
+/* Additional info */
+.additional-info {
+  margin-top: 2rem;
+}
+
+.additional-info h2 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}

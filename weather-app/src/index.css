@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.bg-clear {
+  background-image: url("./images/clear-weather.jpg");
+}
+
+.bg-clouds {
+  background-image: url("./images/cloudy-weather.jpg");
+}
+
+.bg-rain {
+  background-image: url("./images/rainy-weather.jpg");
+}
+
+.bg-snow {
+  background-image: url("./images/snowy-weather.jpg");
+}
+
+.bg-default {
+  background-image: url("./images/default-weather.jpg");
+}
