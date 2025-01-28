@@ -1,0 +1,20 @@
+.activity-recommendation {
+    margin-top: 20px;
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
+.activity-recommendation h2 {
+    margin-bottom: 10px;
+}
+
+.activity-recommendation ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.activity-recommendation li {
+    margin: 5px 0;
+} 

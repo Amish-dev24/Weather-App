@@ -36,7 +36,7 @@ const Historical = () => {
 
       const formattedDate = `${year}-${month}-${day}`;
       const response = await fetch(
-        `http://127.0.0.1:8000/events?date=${formattedDate}`
+        `http://127.0.0.1:8000/historical-events/?date=${formattedDate}`
       );
 
       if (!response.ok) {
@@ -85,10 +85,19 @@ const Historical = () => {
         return;
       }
 
-      const response = await fetch("http://127.0.0.1:8000/events", {
+      // Ensure the date is in the correct format (YYYY-MM-DD)
+      const dateParts = newEvent.date.split("-");
+      if (dateParts.length !== 3 || dateParts[0].length !== 4 || dateParts[1].length !== 2 || dateParts[2].length !== 2) {
+        setError("Date must be in YYYY-MM-DD format.");
+        return;
+      }
+
+      // Updated URL for adding historical events
+      const response = await fetch("http://127.0.0.1:8000/historical-events/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "accept": "application/json", // Added accept header
         },
         body: JSON.stringify(newEvent),
       });

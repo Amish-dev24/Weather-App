@@ -2,6 +2,8 @@ import React, { useState, useEffect, useCallback } from "react";
 import Historical from "./Moduel/Historical"; // Importing Historical component
 import Daily from "./Moduel/Daily";
 import Hourly from "./Moduel/Hourly";
+import WeatherAlert from "./Moduel/WatherAlert"; // Fix typo in import if needed
+import ActivityRecommendation from "./Moduel/ActivityRecommendation"; // Import the new component
 import "./App.css"; // Custom CSS file
 
 function App() {
@@ -9,10 +11,16 @@ function App() {
   const [weather, setWeather] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [interests, setInterests] = useState([]); // State for user interests
 
   const API_KEY = process.env.REACT_APP_WEATHER_API_KEY;
 
   const fetchWeather = useCallback(async () => {
+    if (!API_KEY) {
+      setError('Weather API key is missing');
+      return;
+    }
+
     setLoading(true);
     const API_URL = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&units=metric`;
 
@@ -54,6 +62,24 @@ function App() {
     fetchWeather();
   };
 
+  const handleInterestChange = (e) => {
+    const value = e.target.value;
+    setInterests(prevInterests => 
+        prevInterests.includes(value) 
+            ? prevInterests.filter(interest => interest !== value) 
+            : [...prevInterests, value]
+    );
+  };
+
+  // Render error message if API key is missing
+  if (!API_KEY) {
+    return (
+      <div className="app-container">
+        <div className="error">Please configure your API key</div>
+      </div>
+    );
+  }
+
   return (
     <div className="app-container">
       <header className="app-header">
@@ -67,6 +93,21 @@ function App() {
           placeholder="Enter city"
           className="city-input"
         />
+        <div className="interests">
+          <h3>Select Your Interests:</h3>
+          <label>
+            <input type="checkbox" value="outdoor" onChange={handleInterestChange} />
+            Outdoor
+          </label>
+          <label>
+            <input type="checkbox" value="indoor" onChange={handleInterestChange} />
+            Indoor
+          </label>
+          <label>
+            <input type="checkbox" value="sports" onChange={handleInterestChange} />
+            Sports
+          </label>
+        </div>
         {loading && <p className="loading">Loading...</p>}
         {error && <p className="error">{error}</p>}
         {weather && weather.main && (
@@ -83,6 +124,8 @@ function App() {
           </div>
         )}
         <section className="additional-info">
+          <WeatherAlert apiKey={API_KEY} city={city} />
+          <ActivityRecommendation weather={weather} interests={interests} />
           <h2>Historical Weather Events</h2>
           <Historical />
           <Daily city={city} apiKey={API_KEY} />

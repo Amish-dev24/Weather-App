@@ -1,32 +1,34 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Depends
 import asyncpg
 from datetime import datetime
 from typing import Optional
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
+import logging
 
 # Initialize FastAPI app
 app = FastAPI()
 
-# Add CORS middleware to allow cross-origin requests
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["http://localhost:3000"],  # Allow requests from React's dev server
-    allow_credentials=True,
-    allow_methods=["*"],  # Allows all HTTP methods
-    allow_headers=["*"],  # Allows all headers
-)
-
 # PostgreSQL connection URL
 DATABASE_URL = "postgresql://postgres:1234@127.0.0.1/weather_database"
 
-# Asyncpg connection pool
-async def get_db_connection():
-    return await asyncpg.connect(DATABASE_URL)
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+
+# Dependency to get a database connection
+async def get_db():
+    try:
+        connection = await asyncpg.connect(DATABASE_URL)
+        yield connection
+    finally:
+        await connection.close()  # Ensure the connection is closed after use
 
 @app.on_event("startup")
 async def startup():
-    app.state.db = await get_db_connection()
+    app.state.db = await get_db()
+    if not app.state.db:
+        logging.error("Database connection could not be established.")
+        raise HTTPException(status_code=500, detail="Database connection failed.")
 
 @app.on_event("shutdown")
 async def shutdown():
@@ -39,57 +41,53 @@ class HistoricalEvent(BaseModel):
     description: str
     event_type: str  # Example: "war", "discovery", "cultural"
 
-# Endpoint to fetch historical events by date
-@app.get("/events")
-async def get_events(date: Optional[str] = None):
+@app.get("/events/")
+async def read_events(date: Optional[str] = None, db=Depends(get_db)):
+    if db is None:
+        raise HTTPException(status_code=500, detail="Database connection could not be established.")
+    return await fetch_events(date, db)
+
+# Function to fetch historical events with db dependency
+async def fetch_events(date: Optional[str] = None, db=None):
     try:
-        # If no date is provided, use today's date
         if not date:
             date_obj = datetime.today().date()
         else:
-            # Convert the date string to a datetime.date object
-            date_obj = datetime.strptime(date, "%Y-%m-%d").date()
+            try:
+                date_obj = datetime.strptime(date, "%Y-%m-%d").date()
+            except ValueError:
+                raise HTTPException(status_code=400, detail="Invalid date format. Use YYYY-MM-DD.")
         
-        # Query to fetch events for the given date
         query = """
             SELECT location, description, event_type 
             FROM historical_events
             WHERE date = $1
         """
         
-        # Fetch events for the given date
-        events = await app.state.db.fetch(query, date_obj)
+        events = await db.fetch(query, date_obj)  # Use the db parameter
         
         if not events:
             raise HTTPException(status_code=404, detail="No events found for this date.")
         
-        # Return formatted response
         return [{"location": event["location"], "description": event["description"], "event_type": event["event_type"]} for event in events]
     
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}")
+        logging.error(f"Error fetching events: {str(e)}")  # Log the error
+        raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}")  # Include the error message in the response
 
-# Endpoint to add a new historical event
-@app.post("/events")
-async def add_event(event: HistoricalEvent):
-    """
-    Add a new historical event to the database.
-    """
+# Function to add a new historical event with db dependency
+async def add_event(event: HistoricalEvent, db=Depends(get_db)):
     try:
-        # Convert date string to a datetime.date object
-        try:
-            event_date = datetime.strptime(event.date, "%Y-%m-%d").date()
-        except ValueError:
-            raise HTTPException(status_code=400, detail="Invalid date format. Use YYYY-MM-DD.")
+        event_date = datetime.strptime(event.date, "%Y-%m-%d").date()
         
-        # Insert the event into the database
         query = """
             INSERT INTO historical_events (date, location, description, event_type)
             VALUES ($1, $2, $3, $4)
         """
-        await app.state.db.execute(query, event_date, event.location, event.description, event.event_type)
+        await db.execute(query, event_date, event.location, event.description, event.event_type)
         
         return {"message": "Event added successfully"}
     
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}")
+        logging.error(f"Error adding event: {str(e)}")  # Log the error with more context
+        raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}")  # Include the error message in the response
