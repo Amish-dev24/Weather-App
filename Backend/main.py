@@ -40,9 +40,10 @@ class Activity(BaseModel):
     description: str
 
 class HistoricalEvent(BaseModel):
-    event_name: str
-    event_date: date
+    date: date  # Format: YYYY-MM-DD
+    location: str
     description: str
+    event_type: str  # Example: "war", "discovery", "cultural"
 
 # Add CORS middleware
 app.add_middleware(
@@ -153,12 +154,12 @@ async def get_historical_events(date: Optional[str] = None, db=Depends(get_db)):
 async def create_historical_event(event: HistoricalEvent, db=Depends(get_db)):
     try:
         query = """
-        INSERT INTO historical_events1 (event_name, event_date, description)
-        VALUES ($1, $2, $3)
+        INSERT INTO historical_events1 (event_date, location, description, event_type)
+        VALUES ($1, $2, $3, $4)
         RETURNING id;
         """
-        new_id = await db.fetchval(query, event.event_name, event.event_date, event.description)
-        return {"id": new_id, **event.dict()}
+        new_id = await db.fetchval(query, event.date, event.location, event.description, event.event_type)
+        return event.dict() | {"id": new_id}  # Corrected response format
     except Exception as e:
         logging.error(f"Error adding historical event: {e}")
         raise HTTPException(status_code=500, detail="Failed to add historical event")

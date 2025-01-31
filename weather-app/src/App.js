@@ -3,7 +3,8 @@ import Historical from "./Moduel/Historical"; // Importing Historical component
 import Daily from "./Moduel/Daily";
 import Hourly from "./Moduel/Hourly";
 import WeatherAlert from "./Moduel/WatherAlert"; // Fix typo in import if needed
-import ActivityRecommendation from "./Moduel/ActivityRecommendation"; // Import the new component
+//import ActivityRecommendation from "./Moduel/ActivityRecommendation"; // Import the new component
+import ActivitySuggestions from "./Moduel/ActivitySuggestions";
 import "./App.css"; // Custom CSS file
 
 function App() {
@@ -11,13 +12,13 @@ function App() {
   const [weather, setWeather] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [interests, setInterests] = useState([]); // State for user interests
+  //const [interests, setInterests] = useState([]); // State for user interests
 
   const API_KEY = process.env.REACT_APP_WEATHER_API_KEY;
 
   const fetchWeather = useCallback(async () => {
     if (!API_KEY) {
-      setError('Weather API key is missing');
+      setError("Weather API key is missing");
       return;
     }
 
@@ -62,14 +63,14 @@ function App() {
     fetchWeather();
   };
 
-  const handleInterestChange = (e) => {
-    const value = e.target.value;
-    setInterests(prevInterests => 
-        prevInterests.includes(value) 
-            ? prevInterests.filter(interest => interest !== value) 
-            : [...prevInterests, value]
-    );
-  };
+  // const handleInterestChange = (e) => {
+  //   const value = e.target.value;
+  //   setInterests((prevInterests) =>
+  //     prevInterests.includes(value)
+  //       ? prevInterests.filter((interest) => interest !== value)
+  //       : [...prevInterests, value]
+  //   );
+  // };
 
   // Render error message if API key is missing
   if (!API_KEY) {
@@ -83,54 +84,66 @@ function App() {
   return (
     <div className="app-container">
       <header className="app-header">
-        <h1>Weather App</h1>
+        <h1>Weather Dashboard</h1>
       </header>
       <main className="app-main">
-        <input
-          type="text"
-          value={city}
-          onChange={handleCityChange}
-          placeholder="Enter city"
-          className="city-input"
-        />
-        <div className="interests">
-          <h3>Select Your Interests:</h3>
-          <label>
-            <input type="checkbox" value="outdoor" onChange={handleInterestChange} />
-            Outdoor
-          </label>
-          <label>
-            <input type="checkbox" value="indoor" onChange={handleInterestChange} />
-            Indoor
-          </label>
-          <label>
-            <input type="checkbox" value="sports" onChange={handleInterestChange} />
-            Sports
-          </label>
+        <div className="input-container">
+          <input
+            type="text"
+            value={city}
+            onChange={handleCityChange}
+            placeholder="Enter city"
+            className="city-input"
+          />
         </div>
-        {loading && <p className="loading">Loading...</p>}
+
+        {loading && <p className="loading">Loading weather data...</p>}
         {error && <p className="error">{error}</p>}
+
+        {/* Main Weather Card */}
         {weather && weather.main && (
-          <div className="weather-card">
-            <h2>{weather.name}</h2>
-            <img
-              src={`https://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`}
-              alt={weather.weather[0].description}
-            />
-            <p>Temperature: {weather.main.temp}°C</p>
-            <p>Weather: {weather.weather[0].description}</p>
-            <p>Humidity: {weather.main.humidity}%</p>
-            <p>Wind Speed: {weather.wind.speed} m/s</p>
+          <div className="main-weather">
+            <div className="weather-card">
+              <h2>{weather.name}</h2>
+              <div className="weather-icon-container">
+                <img
+                  src={`https://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`}
+                  alt={weather.weather[0].description}
+                  className="weather-icon"
+                />
+              </div>
+              <div className="weather-details">
+                <p>Temperature: {weather.main.temp}°C</p>
+                <p>Weather: {weather.weather[0].description}</p>
+                <p>Humidity: {weather.main.humidity}%</p>
+                <p>Wind Speed: {weather.wind.speed} m/s</p>
+              </div>
+            </div>
           </div>
         )}
-        <section className="additional-info">
-          <WeatherAlert apiKey={API_KEY} city={city} />
-          <ActivityRecommendation weather={weather} interests={interests} />
-          <h2>Historical Weather Events</h2>
-          <Historical />
-          <Daily city={city} apiKey={API_KEY} />
-          <Hourly city={city} apiKey={API_KEY} />
-        </section>
+
+        {/* Forecast Section */}
+        <div className="forecast-container">
+          <div className="hourly-section card">
+            <Hourly city={city} apiKey={API_KEY} />
+          </div>
+          <div className="daily-section card">
+            <Daily city={city} apiKey={API_KEY} />
+          </div>
+        </div>
+
+        {/* Additional Components */}
+        <div className="additional-components">
+          <div className="card">
+            <WeatherAlert apiKey={API_KEY} city={city} />
+          </div>
+          <div className="card">
+            <Historical />
+          </div>
+          <div className="card">
+            <ActivitySuggestions />
+          </div>
+        </div>
       </main>
     </div>
   );

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
+//import "./Hourly.scss";
 import "./Hourly.css";
-
 const Hourly = ({ city, apiKey }) => {
   const [hourlyData, setHourlyData] = useState(null);
   const [error, setError] = useState(null);
@@ -33,13 +33,15 @@ const Hourly = ({ city, apiKey }) => {
 
   return (
     <div className="hourly-container">
-      <h2>Hourly Weather</h2>
+      <h2 className="mb-6 text-2xl font-bold text-center text-gray-800">
+        Hourly Weather
+      </h2>
       {error && <p className="text-red-500">{error}</p>}
       {hourlyData ? (
         <div className="hourly-cards">
           {hourlyData
-            .filter((_, index) => index % 4 === 0) // Filter to show every 2 hours
-            .slice(0, 4) // Limit to 12 entries
+            .filter((_, index) => index % 2 === 0) // Filter to show every 2 hours
+            .slice(0, 6) // Limit to 12 entries
             .map((hour, index) => (
               <div key={index} className="hourly-card">
                 <p className="hour">

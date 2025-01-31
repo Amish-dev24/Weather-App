@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import "./Historical.scss";
 
 const Historical = () => {
   const [year, setYear] = useState("");
@@ -12,8 +13,8 @@ const Historical = () => {
     description: "",
     event_type: "",
   });
+  const [showAddForm, setShowAddForm] = useState(false);
 
-  // Validate date
   const validateDate = (year, month, day) => {
     if (year.length !== 4 || month.length !== 2 || day.length !== 2) {
       return false;
@@ -27,7 +28,6 @@ const Historical = () => {
     );
   };
 
-  // Fetch events for the selected date
   const fetchEvents = async () => {
     try {
       if (!validateDate(year, month, day)) {
@@ -52,7 +52,6 @@ const Historical = () => {
     }
   };
 
-  // Handle fetching events
   const handleFetch = () => {
     if (year && month && day) {
       fetchEvents();
@@ -61,7 +60,6 @@ const Historical = () => {
     }
   };
 
-  // Handle input changes for adding new event
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setNewEvent((prev) => ({
@@ -70,11 +68,9 @@ const Historical = () => {
     }));
   };
 
-  // Add new historical event
   const handleAddEvent = async (e) => {
     e.preventDefault();
     try {
-      // Ensure all fields are filled
       if (
         !newEvent.date ||
         !newEvent.location ||
@@ -85,19 +81,22 @@ const Historical = () => {
         return;
       }
 
-      // Ensure the date is in the correct format (YYYY-MM-DD)
       const dateParts = newEvent.date.split("-");
-      if (dateParts.length !== 3 || dateParts[0].length !== 4 || dateParts[1].length !== 2 || dateParts[2].length !== 2) {
+      if (
+        dateParts.length !== 3 ||
+        dateParts[0].length !== 4 ||
+        dateParts[1].length !== 2 ||
+        dateParts[2].length !== 2
+      ) {
         setError("Date must be in YYYY-MM-DD format.");
         return;
       }
 
-      // Updated URL for adding historical events
       const response = await fetch("http://127.0.0.1:8000/historical-events/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "accept": "application/json", // Added accept header
+          accept: "application/json",
         },
         body: JSON.stringify(newEvent),
       });
@@ -110,6 +109,7 @@ const Historical = () => {
           description: "",
           event_type: "",
         });
+        setShowAddForm(false);
         alert("Event added successfully!");
       } else {
         throw new Error("Failed to add event.");
@@ -120,13 +120,13 @@ const Historical = () => {
   };
 
   return (
-    <div className="flex flex-col items-center min-h-screen py-10 bg-gray-100">
+    <div className="flex flex-col items-center min-h-screen py-10 bg-gray-100 historical-container">
       <h2 className="mb-6 text-2xl font-bold text-gray-800">
         Historical Events
       </h2>
 
-      {/* Fetch Events Section */}
-      <div className="flex gap-4 mb-6">
+      {/* Date Inputs and Fetch Button */}
+      <div className="flex gap-4 mb-6 event-inputs">
         <input
           type="text"
           value={year}
@@ -160,13 +160,13 @@ const Historical = () => {
         Fetch Events
       </button>
 
-      {/* Error or Success Messages */}
+      {/* Error Messages */}
       {error && (
         <p className="mt-4 text-sm font-medium text-red-500">{error}</p>
       )}
 
-      {/* Display fetched events */}
-      <div className="w-full max-w-3xl p-6 mt-6 bg-white rounded-lg shadow-md">
+      {/* Events List */}
+      <div className="w-full max-w-3xl p-6 mt-6 bg-white rounded-lg shadow-md event-list">
         {events.length > 0 ? (
           <ul className="space-y-4">
             {events.map((event, index) => (
@@ -192,53 +192,67 @@ const Historical = () => {
           )
         )}
       </div>
+      {/* Add New Event Button */}
+      <button
+        onClick={() => setShowAddForm(true)}
+        className="px-6 py-2 mb-6 text-white transition duration-200 bg-green-500 rounded-lg hover:bg-green-600"
+      >
+        Add New Event
+      </button>
 
-      {/* Add Event Section */}
-      <div className="w-full max-w-3xl p-6 mt-6 bg-white rounded-lg shadow-md">
-        <h3 className="mb-4 text-xl font-semibold text-gray-800">
-          Add a New Event
-        </h3>
-        <form onSubmit={handleAddEvent}>
-          <input
-            type="text"
-            name="date"
-            value={newEvent.date}
-            onChange={handleInputChange}
-            placeholder="Date (YYYY-MM-DD)"
-            className="w-full p-2 mb-4 border rounded-lg"
-          />
-          <input
-            type="text"
-            name="location"
-            value={newEvent.location}
-            onChange={handleInputChange}
-            placeholder="Location"
-            className="w-full p-2 mb-4 border rounded-lg"
-          />
-          <input
-            type="text"
-            name="description"
-            value={newEvent.description}
-            onChange={handleInputChange}
-            placeholder="Description"
-            className="w-full p-2 mb-4 border rounded-lg"
-          />
-          <input
-            type="text"
-            name="event_type"
-            value={newEvent.event_type}
-            onChange={handleInputChange}
-            placeholder="Event Type"
-            className="w-full p-2 mb-4 border rounded-lg"
-          />
-          <button
-            type="submit"
-            className="w-full px-6 py-2 text-white transition duration-200 bg-green-500 rounded-lg hover:bg-green-600"
-          >
-            Add Event
-          </button>
-        </form>
-      </div>
+      {/* Add Event Modal */}
+      {showAddForm && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <button className="close-btn" onClick={() => setShowAddForm(false)}>
+              &times;
+            </button>
+            <h3 className="mb-4 text-xl font-semibold text-gray-800">
+              Add a New Event
+            </h3>
+            <form onSubmit={handleAddEvent}>
+              <input
+                type="text"
+                name="date"
+                value={newEvent.date}
+                onChange={handleInputChange}
+                placeholder="Date (YYYY-MM-DD)"
+                className="w-full p-2 mb-4 border rounded-lg"
+              />
+              <input
+                type="text"
+                name="location"
+                value={newEvent.location}
+                onChange={handleInputChange}
+                placeholder="Location"
+                className="w-full p-2 mb-4 border rounded-lg"
+              />
+              <input
+                type="text"
+                name="description"
+                value={newEvent.description}
+                onChange={handleInputChange}
+                placeholder="Description"
+                className="w-full p-2 mb-4 border rounded-lg"
+              />
+              <input
+                type="text"
+                name="event_type"
+                value={newEvent.event_type}
+                onChange={handleInputChange}
+                placeholder="Event Type"
+                className="w-full p-2 mb-4 border rounded-lg"
+              />
+              <button
+                type="submit"
+                className="w-full px-6 py-2 text-white transition duration-200 bg-green-500 rounded-lg hover:bg-green-600"
+              >
+                Add Event
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
