@@ -134,13 +134,14 @@ function App() {
 
         {/* Additional Components */}
         <div className="additional-components">
-          <div className="card">
-            <WeatherAlert apiKey={API_KEY} city={city} />
-          </div>
+          {/* Historical Data First */}
           <div className="card">
             <Historical />
           </div>
-          <div className="card">
+
+          {/* One div for Weather Alert and Activity Suggestions (stacked vertically) */}
+          <div className="container card">
+            <WeatherAlert apiKey={API_KEY} city={city} />
             <ActivitySuggestions />
           </div>
         </div>
