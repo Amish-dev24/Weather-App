@@ -197,3 +197,18 @@ body {
   flex-direction: column;
   gap: 1rem; /* Space between WeatherAlert and ActivitySuggestions */
 }
+/* Container for Weather Alert and Activity Suggestions */
+.container.card {
+  display: flex;
+  flex-direction: column; /* Stack elements vertically */
+  gap: 1rem; /* Optional: Adds spacing between the two components */
+
+  .weather-alert-container,
+  .activity-suggestions-container {
+    /* Optional: Apply some styling for individual sections */
+    padding: 1rem;
+    border-radius: 8px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+}

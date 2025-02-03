@@ -141,8 +141,12 @@ function App() {
 
           {/* One div for Weather Alert and Activity Suggestions (stacked vertically) */}
           <div className="container card">
-            <WeatherAlert apiKey={API_KEY} city={city} />
-            <ActivitySuggestions />
+            <div className="weather-alert-container">
+              <WeatherAlert apiKey={API_KEY} city={city} />
+            </div>
+            <div className="activity-suggestions-container">
+              <ActivitySuggestions />
+            </div>
           </div>
         </div>
       </main>

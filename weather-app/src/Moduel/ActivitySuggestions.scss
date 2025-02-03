@@ -1,7 +1,12 @@
-// ActivitySuggestions.scss
 .activity-suggestions {
   position: relative;
   padding: 2rem;
+
+  .button-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1rem;
+  }
 
   .modal-overlay {
     position: fixed;
@@ -20,8 +25,9 @@
       padding: 2rem;
       border-radius: 8px;
       width: 90%;
-      max-width: 500px;
+      max-width: 600px;
       position: relative;
+      overflow-y: auto; // to allow scrolling if the list is long
 
       .close-btn {
         position: absolute;
@@ -69,46 +75,34 @@
           }
         }
       }
-    }
-  }
 
-  .activity-list {
-    margin-top: 2rem;
+      .activity-list {
+        margin-top: 2rem;
 
-    ul {
-      list-style: none;
-      padding: 0;
-      display: grid;
-      gap: 1rem;
+        ul {
+          list-style: none;
+          padding: 0;
+          display: grid;
+          gap: 1rem;
 
-      li {
-        background: #f8fafc;
-        padding: 1.5rem;
-        border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+          li {
+            background: #f8fafc;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 
-        h3 {
-          margin: 0 0 0.5rem;
-          color: #1e293b;
-        }
+            h3 {
+              margin: 0 0 0.5rem;
+              color: #1e293b;
+            }
 
-        p {
-          margin: 0;
-          color: #64748b;
+            p {
+              margin: 0;
+              color: #64748b;
+            }
+          }
         }
       }
     }
   }
-}
-.btn {
-  font-weight: bold;
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
-}
-.btn-blue {
-  background-color: #3b82f6;
-  color: white;
-}
-.btn-blue:hover {
-  background-color: #2563eb;
 }
