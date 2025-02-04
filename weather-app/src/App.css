@@ -36,10 +36,12 @@ body {
   text-align: center;
   margin-bottom: 2rem;
   padding: 1rem;
-  background-color: var(--primary-color);
-  color: white;
-  border-radius: var(--border-radius);
+  font-weight: 800;
+  /* background-color: var(--primary-color); */
+  color: Black;
+  /* border-radius: var(--border-radius);
   box-shadow: var(--box-shadow);
+} */
 }
 
 .app-main {
@@ -130,8 +132,8 @@ body {
 }
 
 .detail-icon {
-  width: 40px; /* Increase icon size */
-  height: 40px;
+  width: 30px; /* Adjust icon size */
+  height: 30px; /* Adjust icon size */
   flex-shrink: 0;
 }
 
@@ -139,6 +141,8 @@ body {
   flex: 1;
   text-align: center;
   font-size: 1.2rem; /* Increase text size */
+  margin-left: 35px;
+  font-weight: 800;
 }
 
 .forecast-container {

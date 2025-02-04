@@ -31,8 +31,7 @@ const ActivitySuggestions = () => {
         )
           .then((response) => response.json())
           .then((data) => {
-            setActivities(data);
-            setShowModal(false); // Close modal on success
+            setActivities(data); // Set the activities data
           })
           .catch((error) => console.error("Error fetching activities:", error));
       })
@@ -44,12 +43,14 @@ const ActivitySuggestions = () => {
       <h2 className="mb-6 text-2xl font-bold text-center text-gray-800">
         Get Activity Suggestions
       </h2>
-      <button
-        onClick={() => setShowModal(true)}
-        className="px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-700"
-      >
-        Get Activity Suggestions
-      </button>
+      <div className="button-container">
+        <button
+          onClick={() => setShowModal(true)}
+          className="px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-700"
+        >
+          Get Activity Suggestions
+        </button>
+      </div>
 
       {showModal && (
         <div className="modal-overlay">
@@ -87,25 +88,31 @@ const ActivitySuggestions = () => {
                 onChange={(e) => setHobbies(e.target.value)}
                 required
               />
-              <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                Get Suggestions
-              </button>
+              <div className="submit-button-container">
+                <button
+                  type="submit"
+                  className="px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-700"
+                >
+                  Get Suggestions
+                </button>
+              </div>
             </form>
-          </div>
-        </div>
-      )}
 
-      {activities.length > 0 && (
-        <div className="activity-list">
-          <h2>Activity Suggestions for {city}</h2>
-          <ul>
-            {activities.map((activity, index) => (
-              <li key={index}>
-                <h3>{activity.name}</h3>
-                <p>{activity.description}</p>
-              </li>
-            ))}
-          </ul>
+            {/* Display activity suggestions inside the modal */}
+            {activities.length > 0 && (
+              <div className="activity-list">
+                <h2>Activity Suggestions for {city}</h2>
+                <ul>
+                  {activities.map((activity, index) => (
+                    <li key={index}>
+                      <h3>{activity.name}</h3>
+                      <p>{activity.description}</p>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
         </div>
       )}
     </div>

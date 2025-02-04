@@ -125,19 +125,19 @@ function App() {
                     alt="Temperature"
                     className="detail-icon"
                   />
-                  {weather.main.temp}°C
+                  <span>{weather.main.temp}°C</span>
                 </p>
                 <p>
                   <img src={search} alt="Weather" className="detail-icon" />
-                  {weather.weather[0].description}
+                  <span>{weather.weather[0].description}</span>
                 </p>
                 <p>
                   <img src={humidity} alt="Humidity" className="detail-icon" />
-                  {weather.main.humidity}%
+                  <span>{weather.main.humidity}%</span>
                 </p>
                 <p>
                   <img src={wind} alt="Wind Speed" className="detail-icon" />
-                  {weather.wind.speed} m/s
+                  <span>{weather.wind.speed} m/s</span>
                 </p>
               </div>
             </div>
@@ -163,11 +163,12 @@ function App() {
 
           {/* One div for Weather Alert and Activity Suggestions (stacked vertically) */}
           <div className="container card">
-            <div className="weather-alert-container">
-              <WeatherAlert apiKey={API_KEY} city={city} />
-            </div>
             <div className="activity-suggestions-container">
               <ActivitySuggestions />
+            </div>
+
+            <div className="weather-alert-container">
+              <WeatherAlert apiKey={API_KEY} city={city} />
             </div>
           </div>
         </div>

@@ -175,13 +175,16 @@ const Historical = () => {
                 className="pb-4 border-b last:border-none last:pb-0"
               >
                 <p>
+                  <strong>Date:</strong> {event.event_date}
+                </p>
+                <p>
                   <strong>Location:</strong> {event.location}
                 </p>
                 <p>
-                  <strong>Description:</strong> {event.description}
+                  <strong>Type:</strong> {event.event_type}
                 </p>
                 <p>
-                  <strong>Type:</strong> {event.event_type}
+                  <strong>Description:</strong> {event.description}
                 </p>
               </li>
             ))}
