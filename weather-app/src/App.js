@@ -6,6 +6,11 @@ import WeatherAlert from "./Moduel/WatherAlert"; // Fix typo in import if needed
 //import ActivityRecommendation from "./Moduel/ActivityRecommendation"; // Import the new component
 import ActivitySuggestions from "./Moduel/ActivitySuggestions";
 import "./App.css"; // Custom CSS file
+import "@fortawesome/fontawesome-free/css/all.min.css";
+import search from "./Assets/search.png";
+import humidity from "./Assets/humidity.png";
+import wind from "./Assets/wind.png";
+import temprature from "./Assets/temprature.png";
 
 function App() {
   const [city, setCity] = useState("Lahore");
@@ -95,6 +100,7 @@ function App() {
             placeholder="Enter city"
             className="city-input"
           />
+          <img src={search} alt="Search" className="search-icon" />
         </div>
 
         {loading && <p className="loading">Loading weather data...</p>}
@@ -113,10 +119,26 @@ function App() {
                 />
               </div>
               <div className="weather-details">
-                <p>Temperature: {weather.main.temp}°C</p>
-                <p>Weather: {weather.weather[0].description}</p>
-                <p>Humidity: {weather.main.humidity}%</p>
-                <p>Wind Speed: {weather.wind.speed} m/s</p>
+                <p>
+                  <img
+                    src={temprature}
+                    alt="Temperature"
+                    className="detail-icon"
+                  />
+                  {weather.main.temp}°C
+                </p>
+                <p>
+                  <img src={search} alt="Weather" className="detail-icon" />
+                  {weather.weather[0].description}
+                </p>
+                <p>
+                  <img src={humidity} alt="Humidity" className="detail-icon" />
+                  {weather.main.humidity}%
+                </p>
+                <p>
+                  <img src={wind} alt="Wind Speed" className="detail-icon" />
+                  {weather.wind.speed} m/s
+                </p>
               </div>
             </div>
           </div>

@@ -43,7 +43,7 @@ const Daily = ({ city, apiKey }) => {
   }, [city, apiKey]);
 
   return (
-    <div className="container p-6 mx-auto bg-gray-100 rounded-lg shadow-lg">
+    <div className="container p-6 mx-auto rounded-lg ">
       <h2 className="mb-6 text-2xl font-bold text-center text-gray-800">
         4-Day Weather Forecast
       </h2>
@@ -56,7 +56,7 @@ const Daily = ({ city, apiKey }) => {
           {dailyData.map((day, index) => (
             <div
               key={index}
-              className="p-6 transition-shadow duration-300 bg-white rounded-lg shadow-md hover:shadow-xl"
+              className="p-6 transition-shadow duration-300 rounded-lg shadow-md hover:shadow-xl"
             >
               <p className="text-xl font-semibold text-gray-800">
                 {new Date(day.dt * 1000).toLocaleDateString()}
@@ -71,7 +71,7 @@ const Daily = ({ city, apiKey }) => {
                   {day.temp.day}°C
                 </p>
               </div>
-              <p className="mt-2 text-sm text-gray-600">
+              <p className="mt-2 text-sm text-gray-600 font-weight: 700">
                 {day.weather[0].description}
               </p>
             </div>
