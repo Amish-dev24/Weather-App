@@ -282,3 +282,9 @@ body {
 }
 
 /* Other existing styles... */
+.weather-card h2 {
+  font-size: 2.5rem; /* Increase the font size */
+  font-weight: bold; /* Make it bold */
+  margin-bottom: 1rem; /* Add some spacing below the city name */
+  color: var(--primary-color); /* Use the primary color variable */
+}

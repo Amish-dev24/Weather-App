@@ -151,7 +151,7 @@ function App() {
                 </p>
                 <p>
                   <img
-                    src={`https://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`}
+                    src={`https://openweathermap.org/img/wn/${weather.weather[0].icon}@4x.png`}
                     alt="Weather"
                     className="detail-icon"
                   />
