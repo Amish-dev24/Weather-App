@@ -1,23 +1,30 @@
 import React, { useState, useEffect, useCallback } from "react";
-import Historical from "./Moduel/Historical"; // Importing Historical component
+import Historical from "./Moduel/Historical";
 import Daily from "./Moduel/Daily";
 import Hourly from "./Moduel/Hourly";
-import WeatherAlert from "./Moduel/WatherAlert"; // Fix typo in import if needed
-//import ActivityRecommendation from "./Moduel/ActivityRecommendation"; // Import the new component
+import WeatherAlert from "./Moduel/WatherAlert";
 import ActivitySuggestions from "./Moduel/ActivitySuggestions";
-import "./App.css"; // Custom CSS file
+import "./App.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import search from "./Assets/search.png";
 import humidity from "./Assets/humidity.png";
 import wind from "./Assets/wind.png";
 import temprature from "./Assets/temprature.png";
 
+// Import background images
+import clear from "./Assets/clear.png";
+import rain from "./Assets/rain.png";
+import cloud from "./Assets/cloud.png";
+import snow from "./Assets/snow.png";
+import thunderstorm from "./images/thunderstorm.jpg";
+import defaulttt from "./images/defaulttt.jpg";
+
 function App() {
   const [city, setCity] = useState("Lahore");
   const [weather, setWeather] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  //const [interests, setInterests] = useState([]); // State for user interests
+  const [backgroundImage, setBackgroundImage] = useState(defaulttt); // Default background
 
   const API_KEY = process.env.REACT_APP_WEATHER_API_KEY;
 
@@ -39,6 +46,28 @@ function App() {
       const data = await response.json();
       setWeather(data);
       setError(null);
+
+      // Set background image based on weather condition
+      const weatherCondition = data.weather[0].main.toLowerCase();
+      switch (weatherCondition) {
+        case "clear":
+          setBackgroundImage(clear);
+          break;
+        case "rain":
+          setBackgroundImage(rain);
+          break;
+        case "clouds":
+          setBackgroundImage(cloud);
+          break;
+        case "snow":
+          setBackgroundImage(snow);
+          break;
+        case "thunderstorm":
+          setBackgroundImage(thunderstorm);
+          break;
+        default:
+          setBackgroundImage(defaulttt);
+      }
     } catch (error) {
       setError("Failed to fetch weather data. Please try again.");
     } finally {
@@ -68,16 +97,6 @@ function App() {
     fetchWeather();
   };
 
-  // const handleInterestChange = (e) => {
-  //   const value = e.target.value;
-  //   setInterests((prevInterests) =>
-  //     prevInterests.includes(value)
-  //       ? prevInterests.filter((interest) => interest !== value)
-  //       : [...prevInterests, value]
-  //   );
-  // };
-
-  // Render error message if API key is missing
   if (!API_KEY) {
     return (
       <div className="app-container">
@@ -87,9 +106,12 @@ function App() {
   }
 
   return (
-    <div className="app-container">
+    <div
+      className="app-container"
+      style={{ backgroundImage: `url(${backgroundImage})` }}
+    >
       <header className="app-header">
-        <h1>Weather Dashboard</h1>
+        <h1 className="dashboard-title">Weather Dashboard</h1>
       </header>
       <main className="app-main">
         <div className="input-container">
@@ -128,7 +150,11 @@ function App() {
                   <span>{weather.main.temp}°C</span>
                 </p>
                 <p>
-                  <img src={search} alt="Weather" className="detail-icon" />
+                  <img
+                    src={`https://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`}
+                    alt="Weather"
+                    className="detail-icon"
+                  />
                   <span>{weather.weather[0].description}</span>
                 </p>
                 <p>

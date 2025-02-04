@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-.bg-clear {
+/* .bg-clear {
   background-image: url("./images/clear-weather.jpg");
 }
 
@@ -20,4 +20,4 @@
 
 .bg-default {
   background-image: url("./images/default-weather.jpg");
-}
+} */
