@@ -19,9 +19,10 @@ $transition-duration: 0.2s;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center; // This centers the button along the Y-axis
   min-height: 60vh; // Reduced height (from 100vh to 80vh)
   padding: 2rem 1rem;
-  background-color: $color-background;
+  // background-color: $color-background;
   color: $color-text;
 
   h2 {
@@ -58,7 +59,7 @@ $transition-duration: 0.2s;
     border-radius: $border-radius;
     cursor: pointer;
     transition: background-color $transition-duration ease;
-    margin-top: 12px;
+    margin-top: 4px;
     &.fetch-button {
       background-color: $color-primary;
 
@@ -82,16 +83,15 @@ $transition-duration: 0.2s;
     font-weight: 500;
     color: $color-error;
   }
-
   .event-list {
     width: 100%;
     max-width: 48rem;
     margin-top: 1.5rem;
     padding: 1.5rem;
-    background-color: #f5f5f5; // Light gray background (replace with desired color)
-    border-radius: 8px; // Example radius (adjust as needed)
+    background-color: $color-white; // White background for better contrast
+    border-radius: $border-radius;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    text-align: center; // Centered text
+    text-align: left; // Align text to the left for better readability
 
     ul {
       list-style: none;
@@ -99,50 +99,77 @@ $transition-duration: 0.2s;
       margin: 0;
 
       li {
-        padding: 1rem;
+        padding: 1.5rem;
         margin-bottom: 1rem;
-        border-radius: 8px; // Same border-radius
-        background-color: #ffffff; // White background for each item
-        border: 1px solid #dcdcdc; // Light border (adjust as needed)
+        border-radius: $border-radius;
+        background-color: $color-white;
+        border: 1px solid #e0e0e0; // Softer border color
         transition: all 0.3s ease;
         cursor: pointer;
+        position: relative;
+        overflow: hidden;
 
         &:last-child {
           margin-bottom: 0;
         }
 
         &:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-          border-color: #007bff; // Example primary color (blue)
+          transform: translateY(-4px); // Slightly larger hover effect
+          box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); // More pronounced shadow on hover
+          border-color: $color-primary; // Use primary color for hover border
+        }
+
+        // Add a subtle gradient background on hover
+        &::before {
+          content: "";
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(
+            135deg,
+            rgba($color-primary, 0.1),
+            rgba($color-secondary, 0.1)
+          );
+          opacity: 0;
+          transition: opacity 0.3s ease;
+          z-index: -1;
+        }
+
+        &:hover::before {
+          opacity: 1;
         }
 
         p {
           margin: 0.5rem 0;
-          color: #333333; // Text color (dark gray)
+          color: $color-text;
 
           strong {
-            color: #333333;
+            color: $color-text;
             font-weight: 600;
           }
         }
 
         .event-date {
           font-size: 0.875rem;
-          color: #888888; // Light gray text color
-          margin-bottom: 0.5rem;
+          color: $color-text-light;
+          margin-bottom: 0.75rem;
+          font-weight: 500;
         }
 
         .event-location {
           font-size: 1rem;
-          color: #007bff; // Primary color for location (blue)
-          margin-bottom: 0.5rem;
+          color: $color-primary; // Use primary color for location
+          margin-bottom: 0.75rem;
+          font-weight: 600;
         }
 
         .event-description {
           font-size: 0.9375rem;
-          line-height: 1.5;
-          color: #333333; // Text color (dark gray)
+          line-height: 1.6;
+          color: $color-text;
+          margin-bottom: 1rem;
         }
 
         .event-type {
@@ -150,22 +177,41 @@ $transition-duration: 0.2s;
           padding: 0.25rem 0.75rem;
           font-size: 0.75rem;
           font-weight: 600;
-          color: #ffffff; // White text
-          background-color: #28a745; // Example secondary color (green)
-          border-radius: 8px;
+          color: $color-white;
+          background-color: $color-secondary; // Use secondary color for event type
+          border-radius: $border-radius;
           margin-top: 0.5rem;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+        }
+
+        // Add a subtle animation for the event type badge
+        .event-type {
+          animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+          0% {
+            transform: scale(1);
+          }
+          50% {
+            transform: scale(1.05);
+          }
+          100% {
+            transform: scale(1);
+          }
         }
       }
     }
 
     .no-events {
       text-align: center;
-      color: #888888; // Light gray for no events message
+      color: $color-text-light;
       font-size: 1rem;
       padding: 2rem 0;
+      font-style: italic;
     }
   }
-
   .modal-overlay {
     position: fixed;
     top: 0;
@@ -236,4 +282,201 @@ $transition-duration: 0.2s;
       }
     }
   }
+}
+/* Loader Modal */
+.loader-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5); /* Dark background to overlay the content */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000; /* Higher z-index to ensure it's on top of the form */
+}
+
+.loader-modal-content {
+  // background: white;
+  padding: 30px;
+  border-radius: 10px;
+  text-align: center;
+  // box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.3);
+}
+
+.loader-modal-content .container {
+  width: 250px;
+  height: 250px;
+  padding: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loader-modal-content .cloud {
+  width: 250px;
+}
+
+.loader-modal-content .front {
+  padding-top: 45px;
+  margin-left: 25px;
+  display: inline;
+  position: absolute;
+  z-index: 11;
+  animation: clouds 8s infinite;
+  animation-timing-function: ease-in-out;
+}
+
+.loader-modal-content .back {
+  margin-top: -30px;
+  margin-left: 150px;
+  z-index: 12;
+  animation: clouds 12s infinite;
+  animation-timing-function: ease-in-out;
+}
+
+.loader-modal-content .right-front {
+  width: 45px;
+  height: 45px;
+  border-radius: 50% 50% 50% 0%;
+  background-color: #4c9beb;
+  display: inline-block;
+  margin-left: -25px;
+  z-index: 5;
+}
+
+.loader-modal-content .left-front {
+  width: 65px;
+  height: 65px;
+  border-radius: 50% 50% 0% 50%;
+  background-color: #4c9beb;
+  display: inline-block;
+  z-index: 5;
+}
+
+.loader-modal-content .right-back {
+  width: 50px;
+  height: 50px;
+  border-radius: 50% 50% 50% 0%;
+  background-color: #4c9beb;
+  display: inline-block;
+  margin-left: -20px;
+  z-index: 5;
+}
+
+.loader-modal-content .left-back {
+  width: 30px;
+  height: 30px;
+  border-radius: 50% 50% 0% 50%;
+  background-color: #4c9beb;
+  display: inline-block;
+  z-index: 5;
+}
+
+.loader-modal-content .sun {
+  width: 120px;
+  height: 120px;
+  background: -webkit-linear-gradient(to right, #fcbb04, #fffc00);
+  background: linear-gradient(to right, #fcbb04, #fffc00);
+  border-radius: 60px;
+  display: inline;
+  position: absolute;
+}
+
+.loader-modal-content .sunshine {
+  animation: sunshines 2s infinite;
+}
+
+@keyframes sunshines {
+  0% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  100% {
+    transform: scale(1.4);
+    opacity: 0;
+  }
+}
+
+@keyframes clouds {
+  0% {
+    transform: translateX(15px);
+  }
+  50% {
+    transform: translateX(0px);
+  }
+  100% {
+    transform: translateX(15px);
+  }
+}
+/* Modal Overlay */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* Modal Content */
+.modal-content {
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 20px;
+  max-width: 600px;
+  width: 80%;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  position: relative;
+  overflow-y: auto;
+  max-height: 80vh; /* To limit the height */
+}
+
+/* Close Button */
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+  background: none;
+  border: none;
+  cursor: pointer;
+
+  &:hover {
+    color: #e74c3c;
+  }
+}
+
+/* Event List */
+ul {
+  padding-left: 20px;
+}
+
+li {
+  margin-bottom: 15px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 10px;
+
+  &:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+}
+
+/* Event Details */
+strong {
+  color: #2c3e50;
+  margin-right: 5px;
+}
+
+p {
+  margin: 5px 0;
+  color: #34495e;
 }

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./Historical.scss";
 
 const Historical = () => {
@@ -14,6 +14,8 @@ const Historical = () => {
     event_type: "",
   });
   const [showAddForm, setShowAddForm] = useState(false);
+  const [loading, setLoading] = useState(false); // For loader
+  const [showEventsModal, setShowEventsModal] = useState(false); // Show event list modal
 
   const validateDate = (year, month, day) => {
     if (year.length !== 4 || month.length !== 2 || day.length !== 2) {
@@ -30,6 +32,7 @@ const Historical = () => {
 
   const fetchEvents = async () => {
     try {
+      setLoading(true); // Show loader
       if (!validateDate(year, month, day)) {
         throw new Error("Please enter a valid date in YYYY-MM-DD format.");
       }
@@ -46,9 +49,16 @@ const Historical = () => {
       const data = await response.json();
       setEvents(data);
       setError("");
+
+      // Simulate loader delay even if operation is fast
+      setTimeout(() => {
+        setShowEventsModal(true); // Show event list modal
+        setLoading(false); // Hide loader after a short delay
+      }, 1000); // Delay for 1 second
     } catch (err) {
       setError(err.message);
       setEvents([]);
+      setLoading(false); // Hide loader immediately if there's an error
     }
   };
 
@@ -71,6 +81,7 @@ const Historical = () => {
   const handleAddEvent = async (e) => {
     e.preventDefault();
     try {
+      setLoading(true); // Show loader
       if (
         !newEvent.date ||
         !newEvent.location ||
@@ -110,17 +121,27 @@ const Historical = () => {
           event_type: "",
         });
         setShowAddForm(false);
-        alert("Event added successfully!");
+
+        // Simulate loader delay even if operation is fast
+        setTimeout(() => {
+          alert("Event added successfully!");
+          setLoading(false); // Hide loader after a short delay
+        }, 1000); // Delay for 1 second
       } else {
         throw new Error("Failed to add event.");
       }
     } catch (err) {
       setError(err.message);
+      setLoading(false); // Hide loader immediately if there's an error
     }
   };
 
+  const closeEventsModal = () => {
+    setShowEventsModal(false); // Close the event list modal
+  };
+
   return (
-    <div className="flex flex-col items-center min-h-screen py-10 bg-gray-100 historical-container">
+    <div className="flex flex-col items-center min-h-screen py-10 historical-container">
       <h2 className="mb-6 text-2xl font-bold text-gray-800">
         Historical Events
       </h2>
@@ -165,36 +186,6 @@ const Historical = () => {
         <p className="mt-4 text-sm font-medium text-red-500">{error}</p>
       )}
 
-      {/* Events List */}
-      <div className="w-full max-w-3xl p-6 mt-6 bg-white rounded-lg shadow-md event-list">
-        {events.length > 0 ? (
-          <ul className="space-y-4">
-            {events.map((event, index) => (
-              <li
-                key={index}
-                className="pb-4 border-b last:border-none last:pb-0"
-              >
-                <p>
-                  <strong>Date:</strong> {event.event_date}
-                </p>
-                <p>
-                  <strong>Location:</strong> {event.location}
-                </p>
-                <p>
-                  <strong>Type:</strong> {event.event_type}
-                </p>
-                <p>
-                  <strong>Description:</strong> {event.description}
-                </p>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          !error && (
-            <p className="text-center text-gray-500">No events to display.</p>
-          )
-        )}
-      </div>
       {/* Add New Event Button */}
       <button
         onClick={() => setShowAddForm(true)}
@@ -253,6 +244,67 @@ const Historical = () => {
                 Add Event
               </button>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Events Modal */}
+      {showEventsModal && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <button className="close-btn" onClick={closeEventsModal}>
+              &times;
+            </button>
+            <h3 className="mb-4 text-xl font-semibold text-gray-800">
+              Historical Events on {year}-{month}-{day}
+            </h3>
+            <div className="event-list">
+              <ul className="space-y-4">
+                {events.length > 0 ? (
+                  events.map((event, index) => (
+                    <li key={index} className="event-item">
+                      <p>
+                        <strong>Date:</strong> {event.event_date}
+                      </p>
+                      <p>
+                        <strong>Location:</strong> {event.location}
+                      </p>
+                      <p>
+                        <strong>Type:</strong> {event.event_type}
+                      </p>
+                      <p>
+                        <strong>Description:</strong> {event.description}
+                      </p>
+                    </li>
+                  ))
+                ) : (
+                  <p className="text-center text-gray-500">
+                    No events to display.
+                  </p>
+                )}
+              </ul>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Loader Modal */}
+      {loading && (
+        <div className="loader-modal-overlay">
+          <div className="loader-modal-content">
+            <div className="container">
+              <div className="cloud front">
+                <span className="left-front"></span>
+                <span className="right-front"></span>
+              </div>
+              <span className="sun sunshine"></span>
+              <span className="sun"></span>
+              <div className="cloud back">
+                <span className="left-back"></span>
+                <span className="right-back"></span>
+              </div>
+            </div>
+            <p>Loading...</p>
           </div>
         </div>
       )}

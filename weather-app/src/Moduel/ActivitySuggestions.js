@@ -8,9 +8,12 @@ const ActivitySuggestions = () => {
   const [hobbies, setHobbies] = useState("");
   const [activities, setActivities] = useState([]);
   const [showModal, setShowModal] = useState(false);
+  const [isLoadingModalOpen, setIsLoadingModalOpen] = useState(false); // Loader state
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    setIsLoadingModalOpen(true); // Show the loading modal
+    console.log("Loading modal open");
 
     const payload = { city, hobbies };
 
@@ -31,11 +34,19 @@ const ActivitySuggestions = () => {
         )
           .then((response) => response.json())
           .then((data) => {
-            setActivities(data); // Set the activities data
+            console.log("Activities fetched", data);
+            setActivities(data);
+            setIsLoadingModalOpen(false); // Hide the loading modal when data is received
           })
-          .catch((error) => console.error("Error fetching activities:", error));
+          .catch((error) => {
+            console.error("Error fetching activities:", error);
+            setIsLoadingModalOpen(false); // Hide the loading modal on error
+          });
       })
-      .catch((error) => console.error("Error submitting interests:", error));
+      .catch((error) => {
+        console.error("Error submitting interests:", error);
+        setIsLoadingModalOpen(false); // Hide the loading modal on error
+      });
   };
 
   return (
@@ -98,8 +109,8 @@ const ActivitySuggestions = () => {
               </div>
             </form>
 
-            {/* Display activity suggestions inside the modal */}
-            {activities.length > 0 && (
+            {/* Display activity suggestions */}
+            {!isLoadingModalOpen && activities.length > 0 && (
               <div className="activity-list">
                 <h2>Activity Suggestions for {city}</h2>
                 <ul>
@@ -112,6 +123,27 @@ const ActivitySuggestions = () => {
                 </ul>
               </div>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* Loader Modal */}
+      {isLoadingModalOpen && (
+        <div className="loader-modal-overlay">
+          <div className="loader-modal-content">
+            <div className="container">
+              <div className="cloud front">
+                <span className="left-front"></span>
+                <span className="right-front"></span>
+              </div>
+              <span className="sun sunshine"></span>
+              <span className="sun"></span>
+              <div className="cloud back">
+                <span className="left-back"></span>
+                <span className="right-back"></span>
+              </div>
+            </div>
+            <p>Loading...</p>
           </div>
         </div>
       )}
