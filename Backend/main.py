@@ -13,7 +13,7 @@ from datetime import datetime
 DATABASE_URL = "postgresql://postgres:1234@127.0.0.1/weather_database"  # Your actual database credentials
 
 # OpenAI API key (replace with your actual key)
-OPENAI_API_KEY = "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"
+OPENAI_API_KEY = "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"
 openai.api_key = OPENAI_API_KEY
 
 # Weather API key (replace with your actual key)

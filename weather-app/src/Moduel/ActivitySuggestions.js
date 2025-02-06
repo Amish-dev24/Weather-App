@@ -8,12 +8,12 @@ const ActivitySuggestions = () => {
   const [hobbies, setHobbies] = useState("");
   const [activities, setActivities] = useState([]);
   const [showModal, setShowModal] = useState(false);
-  const [isLoadingModalOpen, setIsLoadingModalOpen] = useState(false); // Loader state
+  const [showActivityModal, setShowActivityModal] = useState(false); // New state for activity modal
+  const [isLoadingModalOpen, setIsLoadingModalOpen] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setIsLoadingModalOpen(true); // Show the loading modal
-    console.log("Loading modal open");
+    setIsLoadingModalOpen(true);
 
     const payload = { city, hobbies };
 
@@ -34,18 +34,19 @@ const ActivitySuggestions = () => {
         )
           .then((response) => response.json())
           .then((data) => {
-            console.log("Activities fetched", data);
             setActivities(data);
-            setIsLoadingModalOpen(false); // Hide the loading modal when data is received
+            setIsLoadingModalOpen(false);
+            setShowModal(false); // Close the form modal
+            setShowActivityModal(true); // Open the activity modal
           })
           .catch((error) => {
             console.error("Error fetching activities:", error);
-            setIsLoadingModalOpen(false); // Hide the loading modal on error
+            setIsLoadingModalOpen(false);
           });
       })
       .catch((error) => {
         console.error("Error submitting interests:", error);
-        setIsLoadingModalOpen(false); // Hide the loading modal on error
+        setIsLoadingModalOpen(false);
       });
   };
 
@@ -63,6 +64,7 @@ const ActivitySuggestions = () => {
         </button>
       </div>
 
+      {/* Form Modal */}
       {showModal && (
         <div className="modal-overlay">
           <div className="modal-content">
@@ -108,21 +110,29 @@ const ActivitySuggestions = () => {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
 
-            {/* Display activity suggestions */}
-            {!isLoadingModalOpen && activities.length > 0 && (
-              <div className="activity-list">
-                <h2>Activity Suggestions for {city}</h2>
-                <ul>
-                  {activities.map((activity, index) => (
-                    <li key={index}>
-                      <h3>{activity.name}</h3>
-                      <p>{activity.description}</p>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
+      {/* Activity Modal */}
+      {showActivityModal && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <button
+              className="close-btn"
+              onClick={() => setShowActivityModal(false)}
+            >
+              &times;
+            </button>
+            <h2>Activity Suggestions for {city}</h2>
+            <ul>
+              {activities.map((activity, index) => (
+                <li key={index}>
+                  <h3>{activity.name}</h3>
+                  <p>{activity.description}</p>
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
       )}

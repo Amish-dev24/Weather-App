@@ -17,7 +17,7 @@ class Activity(BaseModel):
     description: str
 
 # Set OpenAI API key (replace with your actual key)
-openai.api_key = "sk-proj-oyC7QyQd3PiBbse997ogRQRXT3XwvZpR37aHumad21r_4xtMvlPgCtQT3BlbkFJv9yMf8EPJdvHQ7X8ylPE7P0px3ZW7uY8mdkj5qCyboPpjtFqq7PExE1t2E7R3GRUlPZTS70SAA"
+openai.api_key = "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"
 
 # Endpoint to fetch activities
 @app.get("/activities/", response_model=List[Activity])
