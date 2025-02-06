@@ -9,7 +9,7 @@ import "@fortawesome/fontawesome-free/css/all.min.css";
 import search from "./Assets/search.png";
 import humidity from "./Assets/humidity.png";
 import wind from "./Assets/wind.png";
-import temprature from "./Assets/temprature.png";
+import temperature from "./Assets/temperature.png";
 
 // Import background images
 import clear from "./Assets/clear.png";
@@ -35,6 +35,8 @@ function App() {
     }
 
     setLoading(true);
+    setError(null); // Reset error before fetching new data
+
     const API_URL = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&units=metric`;
 
     try {
@@ -110,9 +112,31 @@ function App() {
       className="app-container"
       style={{ backgroundImage: `url(${backgroundImage})` }}
     >
+      {/* Loader Modal */}
+      {loading && (
+        <div className="loader-modal-overlay">
+          <div className="loader-modal-content">
+            <div className="container">
+              <div className="cloud front">
+                <span className="left-front"></span>
+                <span className="right-front"></span>
+              </div>
+              <span className="sun sunshine"></span>
+              <span className="sun"></span>
+              <div className="cloud back">
+                <span className="left-back"></span>
+                <span className="right-back"></span>
+              </div>
+            </div>
+            <p>Loading...</p>
+          </div>
+        </div>
+      )}
+
       <header className="app-header">
         <h1 className="dashboard-title">Weather Dashboard</h1>
       </header>
+
       <main className="app-main">
         <div className="input-container">
           <input
@@ -125,7 +149,6 @@ function App() {
           <img src={search} alt="Search" className="search-icon" />
         </div>
 
-        {loading && <p className="loading">Loading weather data...</p>}
         {error && <p className="error">{error}</p>}
 
         {/* Main Weather Card */}
@@ -143,7 +166,7 @@ function App() {
               <div className="weather-details">
                 <p>
                   <img
-                    src={temprature}
+                    src={temperature}
                     alt="Temperature"
                     className="detail-icon"
                   />
@@ -151,11 +174,14 @@ function App() {
                 </p>
                 <p>
                   <img
-                    src={`https://openweathermap.org/img/wn/${weather.weather[0].icon}@4x.png`}
+                    src={`https://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`}
                     alt="Weather"
-                    className="detail-icon"
+                    className="weather-icon1"
                   />
-                  <span>{weather.weather[0].description}</span>
+                  <span>
+                    {weather.weather[0].description.charAt(0).toUpperCase() +
+                      weather.weather[0].description.slice(1)}
+                  </span>
                 </p>
                 <p>
                   <img src={humidity} alt="Humidity" className="detail-icon" />
@@ -182,12 +208,10 @@ function App() {
 
         {/* Additional Components */}
         <div className="additional-components">
-          {/* Historical Data First */}
           <div className="card">
             <Historical />
           </div>
 
-          {/* One div for Weather Alert and Activity Suggestions (stacked vertically) */}
           <div className="container card">
             <div className="activity-suggestions-container">
               <ActivitySuggestions />
